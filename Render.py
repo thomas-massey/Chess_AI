@@ -11,6 +11,7 @@ class render:
         self.game = game
         # Load graphics
         self.load_graphics()
+        return
     
     def load_images(self):
         pieces = ["Nb", "Rb", "Bb", "Qb", "Kb", "Pb", "Pw", "Rw", "Nw", "Kw", "Qw", "Bw"]
@@ -38,7 +39,6 @@ class render:
         board = str(self.game)
         board = board.replace(" ", "")
         board = board.replace("\n", "")
-        print(board)
         for row in range(8):
             for col in range(8):
                 piece = board[(row * 8) + col]
@@ -50,7 +50,6 @@ class render:
                     self.surface.blit(self.IMAGES[piece.upper()+"b"], (col * self.WIDTH / 8, row * self.HEIGHT / 8))
                     
         pygame.display.update()
-        sleep(5000) # This is just for testing
     
     def get_events(self):
         clicked_square = ()
