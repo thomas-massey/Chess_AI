@@ -48,10 +48,11 @@ class render:
                     self.surface.blit(self.IMAGES[piece+"w"], (col * self.WIDTH / 8, row * self.HEIGHT / 8))
                 else:
                     self.surface.blit(self.IMAGES[piece.upper()+"b"], (col * self.WIDTH / 8, row * self.HEIGHT / 8))
-                    
+        # Also draw the first circle to represent who goes first
+        pygame.draw.circle(self.surface, self.WHITE, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)            
         pygame.display.update()
     
-    def get_events(self):
+    def get_events(self, game, turn):
         clicked_square = ()
         player_squares = []
         while True:
@@ -62,14 +63,36 @@ class render:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     row = int(pygame.mouse.get_pos()[1] / (self.HEIGHT / 8))
                     col = int(pygame.mouse.get_pos()[0] / (self.WIDTH / 8))
-                    if clicked_square == (row, col):
-                        clicked_square = ()
-                        player_squares = []
-                    else:
-                        clicked_square = (row, col)
-                        player_squares.append(clicked_square)
-                    if len(player_squares) == 2:
-                        return player_squares
+                    # Check if the square is owned by the player and moveable
+                    if len(player_squares) == 1:
+                        destination = chr(abs(int(row-8))+96) + str(abs(int(col)+1))
+                        full_move = (origin+destination)
+                        print(full_move)
+                        for move in game.legal_moves:
+                            if full_move in str(move):
+                                player_squares.append(destination)
+                                return full_move
+                    if len(player_squares) == 0:
+                        legal_moves = game.legal_moves
+                        origin = chr(abs(int(row-8))+96) + str(abs(int(col)+1))
+                        print(origin)
+                        for move in legal_moves:
+                            # Get the first two chracters of the move
+                            move=str(move)[:2]
+                            print(move)
+                            if origin in move:
+                                print("Yay")
+                                player_squares.append(origin)
+                                # Now render the possible locations
+                                for move in legal_moves:
+                                    # Get the first two chracters of the move
+                                    destination_move = [ord(str(move)[2:3])-96, int(str(move)[3:4])-1]
+                                    move=str(move)[:2]
+                                    if origin in move:
+                                        # Now loop through all of the destinations and draw a blue rectangle
+                                        pygame.draw.rect(self.surface, self.BLUE, (destination_move[1] * self.WIDTH / 8, destination_move[0] * self.HEIGHT / 8, self.WIDTH / 8, self.HEIGHT / 8))
+                                break
+                    
                 pygame.time.Clock().tick(self.MAX_FPS)
                 pygame.display.flip()
     
@@ -88,6 +111,18 @@ class render:
         self.GREEN = (0, 255, 0)
         self.BLUE = (0, 0, 255)
         self.IMAGES = {}
+
+    def update_board(self, game, turn):
+        self.game = game
+        self.draw_board()
+        self.draw_pieces()
+        # Draw a small circle in the top left corner of the screen to show whose turn it is
+        if turn == "Black":
+            pygame.draw.circle(self.surface, self.WHITE, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)
+        else:
+            pygame.draw.circle(self.surface, self.BLACK, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)
+        pygame.display.update()
+        return
 
     def load_graphics(self):
         # Create constants
