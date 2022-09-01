@@ -28,7 +28,6 @@ class Game:
             converted_move = letter_pre+str(number_pre)+letter_post+str(number_post)
             potencial_move = chess.Move.from_uci(converted_move)
             # If the move is legal, then we make the move.
-            possible_moves = self.board.legal_moves
             if self.board.is_legal(potencial_move):
                 print(turn + ": Move is legal")
                 self.board.push(potencial_move)
