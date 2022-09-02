@@ -74,12 +74,10 @@ class render:
                             for move in game.legal_moves:
                                 if full_move in str(move):
                                     player_squares.append(destination)
-                                    print(full_move)
                                     return full_move
                     elif len(player_squares) == 0:
                         legal_moves = game.legal_moves
                         origin = chr(int(col)+97) + str(abs((int(row)-8)))
-                        print(origin)
                         more_moves = [] # Where the possible moves are stored
                         place_found = False # If the origin square is found
                         for move in legal_moves:
@@ -91,7 +89,6 @@ class render:
                                     player_squares.append(origin)
                                     place_found = True
                                 more_moves.append(original_move)
-                        print(player_squares)
                         # Now render the possible locations
                         for move in more_moves:
                             row = abs(int(str(move)[3:4])-8)
