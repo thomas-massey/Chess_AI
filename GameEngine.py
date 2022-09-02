@@ -21,10 +21,11 @@ class Game:
             # Now listen for events.
             move = self.render.get_events(self.board, turn)
             # Convert from (row, col) to (letter, number) where (7,0) is a1 and (0,7) is h8
-            letter_pre = chr(abs(int(move[1][1]))+97)
-            letter_post = chr(abs(int(move[0][1]))+97)
-            number_pre = abs(int(move[0][0])-8)
-            number_post = abs(int(move[1][0])-8)
+            # Move will return a string of the form "a1b2"
+            letter_pre = move[0:1]
+            letter_post = move[2:3]
+            number_pre = move[1:2]
+            number_post = move[3:4]
             converted_move = letter_pre+str(number_pre)+letter_post+str(number_post)
             potencial_move = chess.Move.from_uci(converted_move)
             # If the move is legal, then we make the move.

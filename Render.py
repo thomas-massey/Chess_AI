@@ -65,34 +65,36 @@ class render:
                     col = int(pygame.mouse.get_pos()[0] / (self.WIDTH / 8))
                     # Check if the square is owned by the player and moveable
                     if len(player_squares) == 1:
-                        destination = chr(abs(int(row-8))+96) + str(abs(int(col)+1))
+                        destination = chr(int(col)+97) + str(abs((int(row)-8)))
                         full_move = (origin+destination)
-                        print(full_move)
                         for move in game.legal_moves:
                             if full_move in str(move):
                                 player_squares.append(destination)
+                                print(full_move)
                                 return full_move
                     if len(player_squares) == 0:
                         legal_moves = game.legal_moves
-                        origin = chr(abs(int(row-8))+96) + str(abs(int(col)+1))
+                        origin = chr(int(col)+97) + str(abs((int(row)-8)))
                         print(origin)
+                        more_moves = [] # Where the possible moves are stored
+                        place_found = False # If the origin square is found
                         for move in legal_moves:
+                            original_move = str(move)
                             # Get the first two chracters of the move
                             move=str(move)[:2]
-                            print(move)
                             if origin in move:
-                                print("Yay")
-                                player_squares.append(origin)
-                                # Now render the possible locations
-                                for move in legal_moves:
-                                    # Get the first two chracters of the move
-                                    destination_move = [ord(str(move)[2:3])-96, int(str(move)[3:4])-1]
-                                    move=str(move)[:2]
-                                    if origin in move:
-                                        # Now loop through all of the destinations and draw a blue rectangle
-                                        pygame.draw.rect(self.surface, self.BLUE, (destination_move[1] * self.WIDTH / 8, destination_move[0] * self.HEIGHT / 8, self.WIDTH / 8, self.HEIGHT / 8))
-                                break
-                    
+                                if not place_found:
+                                    player_squares.append(origin)
+                                    place_found = True
+                                more_moves.append(original_move)
+                        print(player_squares)
+                        # Now render the possible locations
+                        for move in more_moves:
+                            row = abs(int(str(move)[3:4])-8)
+                            col = ord(str(move)[2:3]) - 97
+                            pygame.draw.rect(self.surface, self.BLUE, (col * self.WIDTH / 8, row * self.HEIGHT / 8, self.WIDTH / 8, self.HEIGHT / 8))
+                
+                self.draw_pieces()
                 pygame.time.Clock().tick(self.MAX_FPS)
                 pygame.display.flip()
     
