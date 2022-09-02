@@ -65,14 +65,18 @@ class render:
                     col = int(pygame.mouse.get_pos()[0] / (self.WIDTH / 8))
                     # Check if the square is owned by the player and moveable
                     if len(player_squares) == 1:
-                        destination = chr(int(col)+97) + str(abs((int(row)-8)))
-                        full_move = (origin+destination)
-                        for move in game.legal_moves:
-                            if full_move in str(move):
-                                player_squares.append(destination)
-                                print(full_move)
-                                return full_move
-                    if len(player_squares) == 0:
+                        if (chr(int(col)+97) + str(abs((int(row)-8)))) == player_squares[0]:
+                            self.reload_graphics()
+                            player_squares = []
+                        else:
+                            destination = chr(int(col)+97) + str(abs((int(row)-8)))
+                            full_move = (origin+destination)
+                            for move in game.legal_moves:
+                                if full_move in str(move):
+                                    player_squares.append(destination)
+                                    print(full_move)
+                                    return full_move
+                    elif len(player_squares) == 0:
                         legal_moves = game.legal_moves
                         origin = chr(int(col)+97) + str(abs((int(row)-8)))
                         print(origin)
@@ -139,5 +143,11 @@ class render:
         self.draw_board()
         # Load the images
         self.load_images()
+        # Draw the pieces
+        self.draw_pieces()
+    
+    def reload_graphics(self):
+        # Draw the board
+        self.draw_board()
         # Draw the pieces
         self.draw_pieces()
