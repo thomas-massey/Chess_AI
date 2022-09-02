@@ -18,6 +18,8 @@ class Game:
                 turn = "White"
             else:
                 turn = "Black"
+            # Render who's turn it is.
+            self.render.show_turn(turn)
             # Now listen for events.
             move = self.render.get_events(self.board, turn)
             # Convert from (row, col) to (letter, number) where (7,0) is a1 and (0,7) is h8

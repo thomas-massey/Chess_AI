@@ -48,8 +48,8 @@ class render:
                     self.surface.blit(self.IMAGES[piece+"w"], (col * self.WIDTH / 8, row * self.HEIGHT / 8))
                 else:
                     self.surface.blit(self.IMAGES[piece.upper()+"b"], (col * self.WIDTH / 8, row * self.HEIGHT / 8))
-        # Also draw the first circle to represent who goes first
-        pygame.draw.circle(self.surface, self.WHITE, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)            
+        # Update who's turn in the GUI
+        self.show_turn(self.game.turn)
         pygame.display.update()
     
     def get_events(self, game, turn):
@@ -94,7 +94,6 @@ class render:
                             col = ord(str(move)[2:3]) - 97
                             pygame.draw.rect(self.surface, self.BLUE, (col * self.WIDTH / 8, row * self.HEIGHT / 8, self.WIDTH / 8, self.HEIGHT / 8))
                 
-                self.draw_pieces()
                 pygame.time.Clock().tick(self.MAX_FPS)
                 pygame.display.flip()
     
@@ -125,6 +124,13 @@ class render:
             pygame.draw.circle(self.surface, self.BLACK, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)
         pygame.display.update()
         return
+
+    def show_turn(self, turn):
+        # Also draw the first circle to represent who goes first
+        if turn == "Black":
+            pygame.draw.circle(self.surface, self.BLACK, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)
+        else:
+            pygame.draw.circle(self.surface, self.WHITE, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)            
 
     def load_graphics(self):
         # Create constants
