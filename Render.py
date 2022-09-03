@@ -21,6 +21,14 @@ class render:
             self.IMAGES[piece] = pygame.transform.scale(image_loading, (self.WIDTH / 8, self.HEIGHT / 8))
         # We can now access an image by saying 'IMAGES['Pw']'
 
+    def load_promotion_images(self):
+        pieces = ["Qw", "Rw", "Bw", "Nw", "Qb", "Rb", "Bb", "Nb"]
+        for piece in pieces:
+            # Load the image and then convert it to be a transparent png
+            image_loading = pygame.image.load("C:\\Users\\thoma\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
+            self.PROMOTION_IMAGES[piece] = pygame.transform.scale(image_loading, (self.WIDTH / 2, self.HEIGHT / 2))
+        # We can now access an image by saying 'PROMOTION_IMAGES['Pw']'
+
     def draw_board(self):
         self.surface = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.init()
@@ -72,8 +80,53 @@ class render:
                             destination = chr(int(col)+97) + str(abs((int(row)-8)))
                             full_move = (origin+destination)
                             for move in game.legal_moves:
-                                if full_move in str(move):
-                                    player_squares.append(destination)
+                                if full_move in str(move)[0:4]:
+                                    print("yes 1")
+                                    if len(str(move)) == 5:
+                                        # Render a 2*2 square to show the user what piece they want to promote to
+                                        for new_row in range(2):
+                                            for new_col in range(2):
+                                                if (new_row + new_col) % 2 == 0:
+                                                    pygame.draw.rect(self.surface, self.GRAY, (new_col * self.WIDTH / 2, new_row * self.HEIGHT / 2, self.WIDTH / 2, self.HEIGHT / 2))
+                                                else:
+                                                    pygame.draw.rect(self.surface, self.DARK_GRAY, (new_col * self.WIDTH / 2, new_row * self.HEIGHT / 2, self.WIDTH / 2, self.HEIGHT / 2))
+                                        # Now draw the pieces
+                                        if turn == "White":
+                                            # Draw a white queen in the top left quadrant
+                                            self.surface.blit(self.PROMOTION_IMAGES["Qw"], (0, 0))
+                                            # Draw a white rook in the top right quadrant
+                                            self.surface.blit(self.PROMOTION_IMAGES["Rw"], (self.WIDTH / 2, 0))
+                                            # Draw a white bishop in the bottom left quadrant
+                                            self.surface.blit(self.PROMOTION_IMAGES["Bw"], (0, self.HEIGHT / 2))
+                                            # Draw a white knight in the bottom right quadrant
+                                            self.surface.blit(self.PROMOTION_IMAGES["Nw"], (self.WIDTH / 2, self.HEIGHT / 2))
+                                        else:
+                                            # Draw a black queen in the top left quadrant
+                                            self.surface.blit(self.PROMOTION_IMAGES["Qb"], (0, 0))
+                                            # Draw a black rook in the top right quadrant
+                                            self.surface.blit(self.PROMOTION_IMAGES["Rb"], (self.WIDTH / 2, 0))
+                                            # Draw a black bishop in the bottom left quadrant
+                                            self.surface.blit(self.PROMOTION_IMAGES["Bb"], (0, self.HEIGHT / 2))
+                                            # Draw a black knight in the bottom right quadrant
+                                            self.surface.blit(self.PROMOTION_IMAGES["Nb"], (self.WIDTH / 2, self.HEIGHT / 2))
+                                        pygame.display.update()
+                                        while True:
+                                            for event in pygame.event.get():
+                                                if event.type == pygame.MOUSEBUTTONDOWN:
+                                                    row = int(pygame.mouse.get_pos()[1] / (self.HEIGHT / 2))
+                                                    col = int(pygame.mouse.get_pos()[0] / (self.WIDTH / 2))
+                                                    if row == 0 and col == 0:
+                                                        return full_move + "q"
+                                                    elif row == 0 and col == 1:
+                                                        return full_move + "r"
+                                                    elif row == 1 and col == 0:
+                                                        return full_move + "b"
+                                                    else:
+                                                        return full_move + "n"
+                                                elif event.type == pygame.QUIT:
+                                                    pygame.quit()
+                                                    quit()
+                                                            
                                     return full_move
                     elif len(player_squares) == 0:
                         legal_moves = game.legal_moves
@@ -112,7 +165,13 @@ class render:
         self.RED = (255, 0, 0)
         self.GREEN = (0, 255, 0)
         self.BLUE = (0, 0, 255)
+        self.YELLOW = (255, 255, 0)
+        self.CYAN = (0, 255, 255)
+        self.MAGENTA = (255, 0, 255)
+        self.GRAY = (128, 128, 128)
+        self.DARK_GRAY = (64, 64, 64)
         self.IMAGES = {}
+        self.PROMOTION_IMAGES = {}
 
     def update_board(self, game, turn):
         self.game = game
@@ -140,6 +199,8 @@ class render:
         self.draw_board()
         # Load the images
         self.load_images()
+        # Load the promotion images
+        self.load_promotion_images()
         # Draw the pieces
         self.draw_pieces()
     

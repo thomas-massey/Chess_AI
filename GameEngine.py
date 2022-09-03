@@ -37,14 +37,11 @@ class Game:
             else:
                 turn = "Black"
             if turn == player_colour:
+                legal_moves = self.board.generate_legal_moves()
+                for move in legal_moves:
+                    print(move)
                 # Now listen for events.
-                move = self.render.get_events(self.board, turn)
-                # Convert from (row, col) to (letter, number) where (7,0) is a1 and (0,7) is h8
-                letter_pre = move[0:1]
-                letter_post = move[2:3]
-                number_pre = move[1:2]
-                number_post = move[3:4]
-                converted_move = letter_pre+str(number_pre)+letter_post+str(number_post)
+                converted_move = self.render.get_events(self.board, turn)
             else:
                 # Basic form of random AI.
                 # Get a list of all the legal moves.
