@@ -94,7 +94,7 @@ class render:
                             row = abs(int(str(move)[3:4])-8)
                             col = ord(str(move)[2:3]) - 97
                             pygame.draw.rect(self.surface, self.BLUE, (col * self.WIDTH / 8, row * self.HEIGHT / 8, self.WIDTH / 8, self.HEIGHT / 8))
-                
+                            self.draw_pieces()
                 pygame.time.Clock().tick(self.MAX_FPS)
                 pygame.display.flip()
     

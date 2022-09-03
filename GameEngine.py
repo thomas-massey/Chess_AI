@@ -2,8 +2,12 @@
 
 # We will also inclue the chess libary.
 
+from random import randint
+import random
+from time import sleep
 import chess
 import Render
+import os
 
 class Game:
     def __init__(self):
@@ -11,26 +15,53 @@ class Game:
         self.board = chess.Board()
         # We create a new render.
         self.render = Render.render(self.board)
+        while True:
+            player_colour = input("What colour would you like to play as, White, Black or Random? (w/b/r): ")
+            if player_colour == "w":
+                player_colour = "White"
+                break
+            elif player_colour == "b":
+                player_colour = "Black"
+                break
+            elif player_colour == "r":
+                type = randint(0, 1)
+                if type == 0:
+                    player_colour = "White"
+                else:
+                    player_colour = "Black"
         # Game loop
         while self.board.is_checkmate != False:
             # Find who's turn it is.
-            if self.board.turn == chess.WHITE:
+            if self.board.turn == True:
                 turn = "White"
             else:
                 turn = "Black"
-            # Render who's turn it is.
-            self.render.show_turn(turn)
-            # Now listen for events.
-            move = self.render.get_events(self.board, turn)
-            # Convert from (row, col) to (letter, number) where (7,0) is a1 and (0,7) is h8
+            if turn == player_colour:
+                # Now listen for events.
+                move = self.render.get_events(self.board, turn)
+                # Convert from (row, col) to (letter, number) where (7,0) is a1 and (0,7) is h8
+                letter_pre = move[0:1]
+                letter_post = move[2:3]
+                number_pre = move[1:2]
+                number_post = move[3:4]
+                converted_move = letter_pre+str(number_pre)+letter_post+str(number_post)
+            else:
+                # Basic form of random AI.
+                # Get a list of all the legal moves.
+                moves = []
+                legal_moves = self.board.generate_legal_moves()
+                # Pick a random move.
+                for move in legal_moves:
+                    moves.append(str(move))
+                    print(move)
+                if len(moves) == 0:
+                    print("Checkmate!")
+                    break
+                converted_move = random.choice(moves)
             # Move will return a string of the form "a1b2"
-            letter_pre = move[0:1]
-            letter_post = move[2:3]
-            number_pre = move[1:2]
-            number_post = move[3:4]
-            converted_move = letter_pre+str(number_pre)+letter_post+str(number_post)
             potencial_move = chess.Move.from_uci(converted_move)
             # If the move is legal, then we make the move.
+            sleep(0.5)
             if self.board.is_legal(potencial_move):
                 print(turn + ": Move is legal")
                 self.board.push(potencial_move)
