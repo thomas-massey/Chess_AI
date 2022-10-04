@@ -8,6 +8,7 @@ from time import sleep
 import chess
 import Render
 import os
+import AI
 
 class Game:
     def __init__(self):
@@ -19,6 +20,8 @@ class Game:
         player_colour = self.render.get_turn()
         # Load the graphics
         self.render.load_graphics()
+        # We create a new AI.
+        self.generate_ai_move = AI.Chess_AI()
         # Game loop
         while self.board.is_checkmate != False:
             # Find who's turn it is.
@@ -39,12 +42,17 @@ class Game:
                 # Get a list of all the legal moves.
                 moves = []
                 legal_moves = self.board.generate_legal_moves()
-                # Pick a random move.
-                for move in legal_moves:
-                    moves.append(str(move))
-                    print(move)
-                if len(moves) == 0:
-                    print("Checkmate!")
+                # # Pick a random move.
+                # for move in legal_moves:
+                #     moves.append(str(move))
+                #     print(move)
+                # or use an ai
+                move = self.generate_ai_move(ai_data).get_move()
+
+
+
+                if self.board.is_game_over() == True:
+                    print("Game over!")
                     break
                 converted_move = random.choice(moves)
             # Move will return a string of the form "a1b2"
