@@ -2,6 +2,7 @@
 
 # Imports
 
+import random
 from time import sleep
 import pygame
 
@@ -9,15 +10,15 @@ class render:
     def __init__(self, game):
         # Load the game
         self.game = game
-        # Load graphics
-        self.load_graphics()
+        self.constant_instantiations()
+        self.surface = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         return
     
     def load_images(self):
         pieces = ["Nb", "Rb", "Bb", "Qb", "Kb", "Pb", "Pw", "Rw", "Nw", "Kw", "Qw", "Bw"]
         for piece in pieces:
             # Load the image and then convert it to be a transparent png
-            image_loading = pygame.image.load("C:\\Users\\thoma\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
+            image_loading = pygame.image.load("C:\\Users\\Thomas\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
             self.IMAGES[piece] = pygame.transform.scale(image_loading, (self.WIDTH / 8, self.HEIGHT / 8))
         # We can now access an image by saying 'IMAGES['Pw']'
 
@@ -25,12 +26,11 @@ class render:
         pieces = ["Qw", "Rw", "Bw", "Nw", "Qb", "Rb", "Bb", "Nb"]
         for piece in pieces:
             # Load the image and then convert it to be a transparent png
-            image_loading = pygame.image.load("C:\\Users\\thoma\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
+            image_loading = pygame.image.load("C:\\Users\\Thomas\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
             self.PROMOTION_IMAGES[piece] = pygame.transform.scale(image_loading, (self.WIDTH / 2, self.HEIGHT / 2))
         # We can now access an image by saying 'PROMOTION_IMAGES['Pw']'
 
     def draw_board(self):
-        self.surface = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.init()
         pygame.display.set_caption("Chess")
         # Draw the board
@@ -81,7 +81,6 @@ class render:
                             full_move = (origin+destination)
                             for move in game.legal_moves:
                                 if full_move in str(move)[0:4]:
-                                    print("yes 1")
                                     if len(str(move)) == 5:
                                         # Render a 2*2 square to show the user what piece they want to promote to
                                         for new_row in range(2):
@@ -173,9 +172,15 @@ class render:
         self.IMAGES = {}
         self.PROMOTION_IMAGES = {}
 
-    def update_board(self, game, turn):
+    def update_board(self, game, turn, previous_move):
         self.game = game
         self.draw_board()
+        # Draw previous move from opponent - given in for a4b5 format
+        if previous_move != None:
+            if turn == "White":
+                pygame.draw.rect(self.surface, self.RED, (ord(previous_move[2:3]) * self.WIDTH / 8, abs(int(previous_move[3:4])-8) * self.HEIGHT / 8, self.WIDTH / 8, self.HEIGHT / 8))
+            else:
+                pygame.draw.rect(self.surface, self.GREEN, (ord(previous_move[2:3]) * self.WIDTH / 8, abs(int(previous_move[3:4])-8) * self.HEIGHT / 8, self.WIDTH / 8, self.HEIGHT / 8))
         self.draw_pieces()
         # Draw a small circle in the top left corner of the screen to show whose turn it is
         if turn == "Black":
@@ -184,6 +189,46 @@ class render:
             pygame.draw.circle(self.surface, self.BLACK, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)
         pygame.display.update()
         return
+    
+    def get_turn(self):
+        # Split the screen into 4 columns with White, then Black, then Random and then Random VS Random
+        pygame.draw.rect(self.surface, self.WHITE, (0, 0, self.WIDTH / 4, self.HEIGHT))
+        # Add text to the screen saying White
+        #font = pygame.font.SysFont("comicsans", 40)
+        #text = font.render("White", 1, self.BLACK)
+        #self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2, self.HEIGHT / 2 - text.get_height() / 2))
+        pygame.draw.rect(self.surface, self.BLACK, (self.WIDTH / 4, 0, self.WIDTH / 4, self.HEIGHT))
+        # Add text to the screen saying Black
+        #font = pygame.font.SysFont("comicsans", 40)
+        #text = font.render("Black", 1, self.WHITE)
+        #self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + self.WIDTH / 4, self.HEIGHT / 2 - text.get_height() / 2))
+        pygame.draw.rect(self.surface, self.GRAY, (self.WIDTH / 2, 0, self.WIDTH / 4, self.HEIGHT))
+        # Add text to the screen saying Random
+        #font = pygame.font.SysFont("comicsans", 40)
+        #text = font.render("Random", 1, self.BLACK)
+        #self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + self.WIDTH / 2, self.HEIGHT / 2 - text.get_height() / 2))
+        pygame.draw.rect(self.surface, self.RED, (3 * self.WIDTH / 4, 0, self.WIDTH / 4, self.HEIGHT))
+        # Add text to the screen saying Chaos
+        #font = pygame.font.SysFont("comicsans", 40)
+        #text = font.render("Chaos", 1, self.WHITE)
+        #self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + 3 * self.WIDTH / 4, self.HEIGHT / 2 - text.get_height() / 2))
+        pygame.display.update()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    col = int(pygame.mouse.get_pos()[0] // (self.WIDTH / 4))
+                    if col == 0:
+                        return "White"
+                    elif col == 1:
+                        return "Black"
+                    elif col == 2:
+                        colour = random.choice(["White", "Black"])
+                        return colour
+                    else:
+                        return "AIBattle"
+                elif event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
 
     def show_turn(self, turn):
         # Also draw the first circle to represent who goes first
@@ -193,8 +238,6 @@ class render:
             pygame.draw.circle(self.surface, self.WHITE, (self.WIDTH / 64, self.HEIGHT / 64), self.WIDTH / 64)            
 
     def load_graphics(self):
-        # Create constants
-        self.constant_instantiations()
         # Draw the board
         self.draw_board()
         # Load the images
