@@ -252,3 +252,7 @@ class render:
         self.draw_board()
         # Draw the pieces
         self.draw_pieces()
+
+    def update_display(self):
+        pygame.display.update()
+        # Prevents crashing
