@@ -16,6 +16,9 @@ class Chess_AI:
         self.env.reset()
         self.env.render()
 
+        # Save file for the AI
+        self.save_file = "AI.save"
+
     # We will pass through all of the possible moves (strings) and all of the game state details (one-hot encoded)
 
     def generate_move(self, game_state, history):
@@ -25,4 +28,8 @@ class Chess_AI:
         # We will pass through all of the possible moves (strings) and all of the game state details (one-hot encoded)
         # We will then use the openAI gym library to generate a move
         # We will then return the move
-        
+        self.game_state = game_state
+        self.history = history
+        self.env.step()
+        self.env.render()
+        self.env.close()

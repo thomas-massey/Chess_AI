@@ -8,7 +8,7 @@ from time import sleep
 import chess
 import Render
 import os
-# import AI
+import AI
 
 class Game:
     def __init__(self):
@@ -21,7 +21,9 @@ class Game:
         # Load the graphics
         self.render.load_graphics()
         # We create a new AI.
-        # self.generate_ai_move = AI.Chess_AI()
+        self.ai = AI.Chess_AI()
+        # Game history
+        self.history = []
         # Game loop
         while self.board.is_game_over != False:
             # Find who's turn it is.
@@ -49,7 +51,8 @@ class Game:
                     moves.append(str(move))
                     print(move)
                 # or use an ai
-                #move = self.generate_ai_move(ai_data).get_move()
+                move = self.ai.generate_ai_move(self.generate_ai_data() , self.history)
+                self.history.append(ai_data)
 
 
 
@@ -327,6 +330,7 @@ class Game:
         is_draw = ""
         # Now print all the data.
         print("White pawns: \n" + str(white_pawns) + "\nBlack pawn: \n" + str(black_pawns) + "\nWhite rooks: \n" + str(white_rooks) + "\nBlack rooks: \n" + str(black_rooks) + "\nWhite knights: \n" + str(white_knights) + "\nBlack knights: \n" + str(black_knights) + "\nWhite bishops: \n" + str(white_bishops) + "\nBlack bishops: \n" + str(black_bishops) + "\nWhite queens: \n" + str(white_queens) + "\nBlack queens: \n" + str(black_queens) + "\nWhite kings: \n" + str(white_kings) + "\nBlack kings: \n" + str(black_kings))
-        
+        return [white_pawns, black_pawns, white_rooks, black_rooks, white_knights, black_knights, white_bishops, black_bishops, white_queens, black_queens, white_kings, black_kings, in_check, white_kingside_castle, white_queenside_castle, black_kingside_castle, black_queenside_castle, en_passant_possible, is_draw]
+
     def get_legal_moves(self):
         return self.board.legal_moves
