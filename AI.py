@@ -12,9 +12,9 @@ class Chess_AI:
     # We will use multiple instances of moves and when a game is over - we will output a report.
     # Then we can use the report for the next generation to learn from.
     def __init__(self):
+        # Make my own environment
         self.env = gym.make('Chess-v0')
         self.env.reset()
-        self.env.render()
 
         # Save file for the AI
         self.save_file = "AI.save"
