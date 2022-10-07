@@ -38,7 +38,7 @@ class Game:
                 converted_move = self.render.get_events(self.board, turn)
             else:
                 # Update the display as it will crash on input.
-                self.render.update_display(self.board)
+                self.render.update_display()
                 # Basic form of random AI.
                 ai_data = self.generate_ai_data()
                 # Get a list of all the legal moves.
