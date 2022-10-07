@@ -1,43 +1,28 @@
 # This is the AI module for a game of chess.
-# It is a module that is used to train an AI to play chess.
-# It will use a neural network to train the AI.
-# It will also use a genetic algorithm to train the AI.
-# It will be made with the help of the NEAT library.
+# It will generate a move and at the end of the game it will
+# generate a report on the game.
+# This means that it will be a generation AI.
+# It will be aware of all past moves
 
-# First we import the necessary libraries.
-import neat
-import os
-import pickle
-import random
-import time
+# Imports - we will use openAI gym for this
+
+import gym
 
 class Chess_AI:
+    # We will use multiple instances of moves and when a game is over - we will output a report.
+    # Then we can use the report for the next generation to learn from.
     def __init__(self):
-        # This is the constructor for the AI.
-        # It will initialize the AI.
-        
-        # Define where the data will be saved.
-        self.p.add_reporter(neat.Checkpointer(5))
-        
+        self.env = gym.make('Chess-v0')
+        self.env.reset()
+        self.env.render()
 
-    def get_move(self, game_data):
-        # This function will get the move for the AI.
-        # It will use the NEAT library to train the AI.
-        # It will also use a genetic algorithm to train the AI.
-        
-        # The data is structured like a binary matrix.
-        
-        self.game_data = game_data
-        
-        # Now we create the NEAT configuration.
-        self.config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                                    neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                                    'config-feedforward')
+    # We will pass through all of the possible moves (strings) and all of the game state details (one-hot encoded)
 
-        # We create the population.
-        self.p = neat.Population(self.config)
+    def generate_move(self, game_state, history):
+        # History will 
 
-        # We add a reporter to show progress in the terminal.
-        self.p.add_reporter(neat.StdOutReporter(True))
-        self.stats = neat.StatisticsReporter()
-        self.p.add_reporter(self.stats)
+        # We will use the openAI gym library to generate a move
+        # We will pass through all of the possible moves (strings) and all of the game state details (one-hot encoded)
+        # We will then use the openAI gym library to generate a move
+        # We will then return the move
+        

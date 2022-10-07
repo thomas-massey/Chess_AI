@@ -8,7 +8,7 @@ from time import sleep
 import chess
 import Render
 import os
-import AI
+# import AI
 
 class Game:
     def __init__(self):
@@ -21,9 +21,9 @@ class Game:
         # Load the graphics
         self.render.load_graphics()
         # We create a new AI.
-        self.generate_ai_move = AI.Chess_AI()
+        # self.generate_ai_move = AI.Chess_AI()
         # Game loop
-        while self.board.is_checkmate != False:
+        while self.board.is_game_over != False:
             # Find who's turn it is.
             if not player_colour == "AIBattle":
                 if self.board.turn == True:
@@ -37,17 +37,19 @@ class Game:
                 # Now listen for events.
                 converted_move = self.render.get_events(self.board, turn)
             else:
+                # Update the display as it will crash on input.
+                self.render.update_display(self.board)
                 # Basic form of random AI.
                 ai_data = self.generate_ai_data()
                 # Get a list of all the legal moves.
                 moves = []
                 legal_moves = self.board.generate_legal_moves()
                 # # Pick a random move.
-                # for move in legal_moves:
-                #     moves.append(str(move))
-                #     print(move)
+                for move in legal_moves:
+                    moves.append(str(move))
+                    print(move)
                 # or use an ai
-                move = self.generate_ai_move(ai_data).get_move()
+                #move = self.generate_ai_move(ai_data).get_move()
 
 
 
@@ -70,6 +72,22 @@ class Game:
                 self.render.update_board(self.board, turn, converted_move)
             else:
                 print(turn + ": Move is not legal")
+        if self.board.is_checkmate():
+            print("Checkmate! Player " + turn + " wins!")
+        elif self.board.is_stalemate():
+            print("Stalemate!")
+        elif self.board.is_insufficient_material():
+            print("Insufficient material!")
+        elif self.board.is_seventyfive_moves():
+            print("Seventyfive moves!")
+        elif self.board.is_fivefold_repetition():
+            print("Fivefold repetition!")
+        elif self.board.is_variant_end():
+            print("Variant end!")
+        elif self.board.is_game_over():
+            print("Game over!")
+        else:
+            print("Unknown error!")
 
     def generate_ai_data(self):
         # First feed it some data:
