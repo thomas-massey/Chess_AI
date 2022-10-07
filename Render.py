@@ -254,5 +254,9 @@ class render:
         self.draw_pieces()
 
     def update_display(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
         pygame.display.update()
         # Prevents crashing
