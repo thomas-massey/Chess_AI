@@ -8,7 +8,7 @@ from time import sleep
 import chess
 import Render
 import os
-import AI
+#import AI
 
 class Game:
     def __init__(self):
@@ -21,7 +21,7 @@ class Game:
         # Load the graphics
         self.render.load_graphics()
         # We create a new AI.
-        self.ai = AI.Chess_AI()
+        #self.ai = AI.Chess_AI()
         # Game history
         self.history = []
         # Game loop
@@ -51,8 +51,8 @@ class Game:
                     moves.append(str(move))
                     print(move)
                 # or use an ai
-                move = self.ai.generate_ai_move(self.generate_ai_data() , self.history)
-                self.history.append(ai_data)
+                #move = self.ai.generate_ai_move(self.generate_ai_data() , self.history)
+                #self.history.append(ai_data)
 
 
 
@@ -63,7 +63,7 @@ class Game:
             # Move will return a string of the form "a1b2"
             potencial_move = chess.Move.from_uci(converted_move)
             # If the move is legal, then we make the move.
-            sleep(0.5)
+            sleep(1.5)
             # Get the turn
             if self.board.turn == True:
                 turn = "White"
