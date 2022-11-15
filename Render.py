@@ -18,7 +18,7 @@ class render:
         pieces = ["Nb", "Rb", "Bb", "Qb", "Kb", "Pb", "Pw", "Rw", "Nw", "Kw", "Qw", "Bw"]
         for piece in pieces:
             # Load the image and then convert it to be a transparent png
-            image_loading = pygame.image.load("C:\\Users\\Thomas\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
+            image_loading = pygame.image.load("C:\\Users\\thoma\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
             self.IMAGES[piece] = pygame.transform.scale(image_loading, (self.WIDTH / 8, self.HEIGHT / 8))
         # We can now access an image by saying 'IMAGES['Pw']'
 
@@ -26,7 +26,7 @@ class render:
         pieces = ["Qw", "Rw", "Bw", "Nw", "Qb", "Rb", "Bb", "Nb"]
         for piece in pieces:
             # Load the image and then convert it to be a transparent png
-            image_loading = pygame.image.load("C:\\Users\\Thomas\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
+            image_loading = pygame.image.load("C:\\Users\\thoma\\OneDrive - Ardingly College\\Lessons\\U6\\Computer Science\\Personal Projects\\Chess_AI\\images\\" + piece + ".png").convert_alpha()
             self.PROMOTION_IMAGES[piece] = pygame.transform.scale(image_loading, (self.WIDTH / 2, self.HEIGHT / 2))
         # We can now access an image by saying 'PROMOTION_IMAGES['Pw']'
 
