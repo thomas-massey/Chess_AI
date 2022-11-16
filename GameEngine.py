@@ -18,12 +18,12 @@ class Game:
         self.render = Render.render(self.board)
         # Use the screen for getting who goes first
         player_colour, is_AI_opponent = self.render.get_turn()
+        if is_AI_opponent:
+            self.AI_mode = self.render.get_AI_mode()
         # Load the graphics
         self.render.load_graphics()
         # We create a new AI.
         self.AI = AI.AI()
-        if is_AI_opponent:
-            self.AI_mode = self.render.get_AI_mode()
         # Game history
         self.history = []
         # Game loop
@@ -36,8 +36,6 @@ class Game:
                     turn = "Black"
             if ((player_colour == "Black") or (player_colour == "White")) and (player_colour == turn):
                 legal_moves = self.board.generate_legal_moves()
-                for move in legal_moves:
-                    print(move)
                 # Now listen for events.
                 converted_move = self.render.get_events(self.board, turn)
             else:
@@ -48,16 +46,21 @@ class Game:
                 # Get a list of all the legal moves.
                 moves = []
                 legal_moves = self.board.generate_legal_moves()
-                # # Pick a random move.
-                for move in legal_moves:
-                    moves.append(str(move))
-                    print(move)
-                # or use an ai
-                self.AI.generate_best_move(self.board, moves, turn)
                 if self.board.is_game_over() == True:
                     print("Game over!")
                     break
-                converted_move = random.choice(moves)
+                if self.AI_mode == "Random":
+                    for move in legal_moves:
+                        moves.append(str(move))
+                    converted_move = random.choice(moves)
+                elif self.AI_mode == "BF3":
+                    converted_move = self.AI.generate_BF3_best_move(self.board, moves, turn)
+                elif self.AI_mode == "BF3":
+                    converted_move = self.AI.generate_BF5_best_move(self.board, moves, turn)
+                elif self.AI_mode == "AIA":
+                    converted_move = self.AI.generate_AIA_best_move(self.board, moves, turn)
+                elif self.AI_mode == "MM3":
+                    converted_move = self.AI.generate_MM_best_move(self.board, moves, turn)
             # Move will return a string of the form "a1b2"
             potencial_move = chess.Move.from_uci(converted_move)
             # If the move is legal, then we make the move.
@@ -74,6 +77,10 @@ class Game:
             else:
                 print(turn + ": Move is not legal")
         if self.board.is_checkmate():
+            if turn == "White":
+                turn = "Black"
+            else:
+                turn = "White"
             print("Checkmate! Player " + turn + " wins!")
         elif self.board.is_stalemate():
             print("Stalemate!")

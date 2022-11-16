@@ -4,7 +4,28 @@ class AI:
     def __init__(self):
         pass
 
-    def generate_best_move(self, board, possible_moves, turn):
+    def generate_BF3_best_move(self, board, possible_moves, turn):
+        # print("AI is thinking...")
+        best_points = 0
+        best_move = None
+        possible_board = None
+        original_score = self.calculate_score(board, turn)
+        for possible_move1 in possible_moves:
+            board1 = self.make_move(board, possible_move1)
+            possible_moves = self.get_possible_moves(board1)
+            for possible_move2 in possible_moves:
+                board2 = self.make_move(board1, possible_move2)
+                possible_moves = self.get_possible_moves(board2)
+                for possible_move3 in possible_moves:
+                    possible_board = self.make_move(board2, possible_move3)
+                    potential_points = self.calculate_score(possible_board, turn)
+                    if potential_points > best_points:
+                        best_points = potential_points
+                        best_move = possible_move1
+
+        return best_move
+    
+    def generate_BF5_best_move(self, board, possible_moves, turn):
         # print("AI is thinking...")
         best_points = 0
         best_move = None
@@ -26,12 +47,37 @@ class AI:
                             possible_board = self.make_move(board4, possible_move5)
                             potential_points = self.calculate_score(possible_board, turn)
                             if potential_points > best_points:
-                                # print("New best move found!")
                                 best_points = potential_points
                                 best_move = possible_move1
-                        
+
         return best_move
-    
+
+    def generate_AIA_best_move(self, board, possible_moves, turn):
+        pass
+
+    def generate_MM3_best_move(self, board, possible_moves, turn):
+        # This is where we make use of the maxmin algorithum
+        # It works like brute force, but we find the best point move, then the best defensive move.
+        best_points = 0
+        best_move = None
+        possible_board = None
+        original_score = self.calculate_score(board, turn)
+        for possible_move in possible_moves:
+            possible_board = self.make_move(board, possible_move)
+            potential_points = self.calculate_score(possible_board, turn)
+            for possible_move2 in self.get_possible_moves(possible_board):
+                possible_board2 = self.make_move(possible_board, possible_move2)
+                # Now we try to minimise the opponents score
+                potential_points -= ((self.calculate_score) * -1)
+                for possible_move3 in self.get_possible_moves(possible_board2):
+                    possible_board3 = self.make_move(possible_board2, possible_move3)
+                    # Now we try to minimise the opponents score
+                    potential_points -= ((self.calculate_score) * -1)
+                    if potential_points > best_points:
+                        best_points = potential_points
+                        best_move = possible_move
+        return best_move
+
     def make_move(self, board, move):
         # Convert the board to a fen string.
         fen = board.fen()

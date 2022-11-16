@@ -12,6 +12,7 @@ class render:
         self.game = game
         self.constant_instantiations()
         self.surface = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        pygame.init()
         return
     
     def load_images(self):
@@ -31,7 +32,6 @@ class render:
         # We can now access an image by saying 'PROMOTION_IMAGES['Pw']'
 
     def draw_board(self):
-        pygame.init()
         pygame.display.set_caption("Chess")
         # Draw the board
         for row in range(8):
@@ -231,39 +231,58 @@ class render:
                     quit()
 
     def get_AI_mode(self):
-        # Draw 4 boxes with the top right having text of BF3 (brute force with a depth of 3), BF5 (brute force with a depth of 5),
-        # AIA (AI agent), and MM (minmax algorithum)
-        pygame.draw.rect(self.surface, self.WHITE, (0, 0, self.WIDTH / 4, self.HEIGHT))
-        pygame.draw.rect(self.surface, self.BLACK, (self.WIDTH / 4, 0, self.WIDTH / 4, self.HEIGHT))
-        pygame.draw.rect(self.surface, self.GRAY, (self.WIDTH / 2, 0, self.WIDTH / 4, self.HEIGHT))
-        pygame.draw.rect(self.surface, self.RED, (3 * self.WIDTH / 4, 0, self.WIDTH / 4, self.HEIGHT))
-        pygame.display.update()
-        # Add text overlay
+        # Draw 8 boxes (4*2) with the top right having text of BF3 (brute force with a depth of 3), BF5 (brute force with a depth of 5),
+        # AIA (AI agent), and MM3 (minmax algorithum depth 3) and 4 blanks. So it looks like this:
+        # BF3 | BF5 | AIA | MM3
+        #     |     |     |
+        # 
+        pygame.draw.rect(self.surface, self.GREEN, (0, 0, self.WIDTH / 4, self.HEIGHT / 2))
+        pygame.draw.rect(self.surface, self.GRAY, (self.WIDTH / 4, 0, self.WIDTH / 4, self.HEIGHT / 2))
+        pygame.draw.rect(self.surface, self.BLUE, (self.WIDTH / 2, 0, self.WIDTH / 4, self.HEIGHT / 2))
+        pygame.draw.rect(self.surface, self.CYAN, (3 * self.WIDTH / 4, 0, self.WIDTH / 4, self.HEIGHT / 2))
+        pygame.draw.rect(self.surface, self.WHITE, (0, self.HEIGHT / 2, self.WIDTH / 4, self.HEIGHT / 2))
+        pygame.draw.rect(self.surface, self.DARK_GRAY, (self.WIDTH / 4, self.HEIGHT / 2, self.WIDTH / 4, self.HEIGHT / 2))
+        pygame.draw.rect(self.surface, self.MAGENTA, (self.WIDTH / 2, self.HEIGHT / 2, self.WIDTH / 4, self.HEIGHT / 2))
+        pygame.draw.rect(self.surface, self.RED, (3 * self.WIDTH / 4, self.HEIGHT / 2, self.WIDTH / 4, self.HEIGHT / 2))
+        # Add text to the screen saying BF3
         font = pygame.font.SysFont("comicsans", 40)
         text = font.render("BF3", 1, self.BLACK)
-        self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2, self.HEIGHT / 2 - text.get_height() / 2))
-        text = font.render("BF5", 1, self.WHITE)
-        self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + self.WIDTH / 4, self.HEIGHT / 2 - text.get_height() / 2))
+        self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2, self.HEIGHT / 4 - text.get_height() / 2))
+        # Add text to the screen saying BF5
+        font = pygame.font.SysFont("comicsans", 40)
+        text = font.render("BF5", 1, self.BLACK)
+        self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + self.WIDTH / 4, self.HEIGHT / 4 - text.get_height() / 2))
+        # Add text to the screen saying AIA
+        font = pygame.font.SysFont("comicsans", 40)
         text = font.render("AIA", 1, self.BLACK)
-        self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + self.WIDTH / 2, self.HEIGHT / 2 - text.get_height() / 2))
-        text = font.render("MM", 1, self.WHITE)
-        self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + 3 * self.WIDTH / 4, self.HEIGHT / 2 - text.get_height() / 2))
+        self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + self.WIDTH / 2, self.HEIGHT / 4 - text.get_height() / 2))
+        # Add text to the screen saying MM3
+        font = pygame.font.SysFont("comicsans", 40)
+        text = font.render("MM3", 1, self.BLACK)
+        self.surface.blit(text, (self.WIDTH / 8 - text.get_width() / 2 + 3 * self.WIDTH / 4, self.HEIGHT / 4 - text.get_height() / 2))
         pygame.display.update()
+        mode = None
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    row = int(pygame.mouse.get_pos()[1] // (self.HEIGHT / 2))
                     col = int(pygame.mouse.get_pos()[0] // (self.WIDTH / 4))
-                    if col == 0:
-                        return "BF3"
-                    elif col == 1:
-                        return "BF5"
-                    elif col == 2:
-                        return "AIA"
+                    if row == 0:
+                        if col == 0:
+                            mode = "BF3"
+                        elif col == 1:
+                            mode = "BF5"
+                        elif col == 2:
+                            mode = "AIA"
+                        else:
+                            mode = "MM3"
                     else:
-                        return "MM"
+                        mode = "Random"
                 elif event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
+                if mode != None:
+                    return mode
 
     def show_turn(self, turn):
         # Also draw the first circle to represent who goes first
