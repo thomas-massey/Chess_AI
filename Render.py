@@ -225,6 +225,23 @@ class render:
                         colour = random.choice(["White", "Black"])
                         return colour, True
                     else:
+                        # Set screen to white
+                        pygame.draw.rect(self.surface, self.WHITE, (0, 0, self.WIDTH, self.HEIGHT))
+                        # Show select AI 1 mode
+                        font = pygame.font.SysFont("comicsans", 20)
+                        text = font.render("Select AI 1's mode!", 1, self.BLACK)
+                        self.surface.blit(text, (self.WIDTH / 2 - text.get_width() / 2, self.HEIGHT / 2 - text.get_height() / 2))
+                        pygame.display.update()
+                        sleep(3)
+                        AI_1_MODE = self.get_AI_mode()
+                        pygame.draw.rect(self.surface, self.WHITE, (0, 0, self.WIDTH, self.HEIGHT))
+                        text = font.render("Select AI 2's mode!", 1, self.BLACK)
+                        self.surface.blit(text, (self.WIDTH / 2 - text.get_width() / 2, self.HEIGHT / 2 - text.get_height() / 2))
+                        pygame.display.update()
+                        sleep(3)
+                        AI_2_MODE = self.get_AI_mode()
+                        return AI_1_MODE, AI_2_MODE
+
                         return "AIBattle", True
                 elif event.type == pygame.QUIT:
                     pygame.quit()
